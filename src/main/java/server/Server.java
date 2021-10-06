@@ -33,7 +33,6 @@ public class Server {
                     while (true) {
                         message = in.readLine();
                         mes = parser.fromJson(message, GuessTheNumberMessage.class);
-                        System.out.println(mes);
                         if (number == mes.number) {
                             mes.startEndGameFlag = false;
                             mes.message = "Игра завершена, число угадано";
