@@ -38,9 +38,9 @@ public class Server {
                             break;
                         } else {
                             if (mes.number > number) {
-                                mes.message = "Введенное число меньше чем загаданное";
-                            } else {
                                 mes.message = "Введенное число больше чем загаданное";
+                            } else {
+                                mes.message = "Введенное число меньше чем загаданное";
                             }
                             WriteReadHandler.write(out, parser.toJson(mes));
                         }
