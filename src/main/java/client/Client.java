@@ -2,10 +2,10 @@ package client;
 
 import com.google.gson.Gson;
 import dto.GuessTheNumberMessage;
+import util.WriteReadHandler;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Client {
 
@@ -18,18 +18,16 @@ public class Client {
             try {
                 Gson parser = new Gson();
                 clientSocket = new Socket("localhost", 4004);
-                Scanner consoleReader = new Scanner(System.in);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                String message = in.readLine();
+                String message = WriteReadHandler.read(in);
                 GuessTheNumberMessage mes = parser.fromJson(message, GuessTheNumberMessage.class);
                 System.out.println("Игра началась");
                 while (true) {
                     System.out.println("Предположите цифру :");
-                    mes.number = consoleReader.nextInt();
-                    out.write(parser.toJson(mes) + "\n");
-                    out.flush();
-                    message = in.readLine();
+                    mes.number = WriteReadHandler.readIntFromConsole();
+                    WriteReadHandler.write(out, parser.toJson(mes));
+                    message = WriteReadHandler.read(in);
                     mes = parser.fromJson(message, GuessTheNumberMessage.class);
                     if (!mes.startEndGameFlag) {
                         System.out.println("Вы победили угадав число");

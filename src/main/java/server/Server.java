@@ -2,11 +2,11 @@ package server;
 
 import com.google.gson.Gson;
 import dto.GuessTheNumberMessage;
+import util.WriteReadHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Server {
 
@@ -23,21 +23,18 @@ public class Server {
                 try {
                     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                    Scanner consoleReader = new Scanner(System.in);
                     String message;
                     System.out.println("Загадайте число:");
-                    int number = consoleReader.nextInt();
+                    int number = WriteReadHandler.readIntFromConsole();
                     GuessTheNumberMessage mes = new GuessTheNumberMessage("Игра началась", number, true);
-                    out.write(parser.toJson(mes) + "\n");
-                    out.flush();
+                    WriteReadHandler.write(out, parser.toJson(mes));
                     while (true) {
-                        message = in.readLine();
+                        message = WriteReadHandler.read(in);
                         mes = parser.fromJson(message, GuessTheNumberMessage.class);
                         if (number == mes.number) {
                             mes.startEndGameFlag = false;
                             mes.message = "Игра завершена, число угадано";
-                            out.write(parser.toJson(mes) + "\n");
-                            out.flush();
+                            WriteReadHandler.write(out, parser.toJson(mes));
                             break;
                         } else {
                             if (mes.number > number) {
@@ -45,8 +42,7 @@ public class Server {
                             } else {
                                 mes.message = "Введенное число больше чем загаданное";
                             }
-                            out.write(parser.toJson(mes) + "\n");
-                            out.flush();
+                            WriteReadHandler.write(out, parser.toJson(mes));
                         }
                     }
                 } finally {
