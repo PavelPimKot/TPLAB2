@@ -13,8 +13,34 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>generate_xsd</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jaxb2-maven-plugin</artifactId>
+                        <version>2.5.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>schemagen</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>src/main/resources/</outputDirectory>
+                                    <sources>
+                                        <source>src/main/java/dto/GuessTheNumberMessage.java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -41,5 +67,4 @@
             <version>3.25.0-GA</version>
         </dependency>
     </dependencies>
-
 </project>

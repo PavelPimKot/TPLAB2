@@ -2,11 +2,13 @@ package server;
 
 import com.google.gson.Gson;
 import dto.GuessTheNumberMessage;
+import org.xml.sax.SAXException;
 import util.WriteReadHandler;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.*;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,10 +26,14 @@ public class Server {
                 Gson parser = new Gson();
                 server = new ServerSocket(4004);
                 stateFile = new File("state.xml");
+                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                Schema schema = schemaFactory.newSchema(new File("src/main/resources/schema1.xsd"));
                 JAXBContext jaxbContext = JAXBContext.newInstance(GuessTheNumberMessage.class);
                 Marshaller marshaller = jaxbContext.createMarshaller();
                 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
                 Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                marshaller.setSchema(schema);
+                unmarshaller.setSchema(schema);
                 Socket clientSocket = server.accept();
                 try {
                     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -63,13 +69,13 @@ public class Server {
             } finally {
                 server.close();
             }
-        } catch (IOException | JAXBException e) {
+        } catch (IOException | JAXBException | SAXException e) {
             System.err.println(e);
         }
     }
 
     private static GuessTheNumberMessage initializeFistMessageAccordingToStateFileExisting(Unmarshaller unmarshaller)
-            throws JAXBException {
+            throws JAXBException, SAXException {
         GuessTheNumberMessage message;
         if (!stateFile.exists()) {
             System.out.println("Загадайте число:");

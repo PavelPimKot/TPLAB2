@@ -1,13 +1,20 @@
 package dto;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(name = "GuessTheNumberMessage")
+@XmlType(name = "GuessThe" +
+        "NumberMessage")
 @XmlRootElement
 public class GuessTheNumberMessage {
-    public String message;
+    @XmlElement(name = "number", required = true)
     public int number;
+
+    @XmlElement(name = "message", required = false)
+    public String message;
+
+    @XmlElement(name = "startEndGameFlag", required = false)
     public boolean startEndGameFlag;
 
     public GuessTheNumberMessage() {
