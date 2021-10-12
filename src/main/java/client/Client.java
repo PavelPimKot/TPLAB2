@@ -22,7 +22,7 @@ public class Client {
                 out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
                 String message = WriteReadHandler.read(in);
                 GuessTheNumberMessage mes = parser.fromJson(message, GuessTheNumberMessage.class);
-                System.out.println("Игра началась");
+                System.out.println(mes.message);
                 while (true) {
                     System.out.println("Предположите цифру :");
                     mes.number = WriteReadHandler.readIntFromConsole();
